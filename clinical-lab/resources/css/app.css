@@ -1,0 +1,65 @@
+@import "tailwindcss";
+
+/* Configuración de contenido para Tailwind v4 */
+@source "../js/**/*.jsx";
+@source "../js/**/*.js";
+
+/* Tema personalizado */
+@theme {
+    --color-primary: #0ea5e9;
+    --color-success: #22c55e;
+    --color-warning: #f59e0b;
+    --color-danger: #ef4444;
+}
+
+/* Estilos base para impresión (útil para resultados de laboratorio) */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+
+    body {
+        background: white !important;
+        color: black !important;
+    }
+
+    a {
+        color: black !important;
+        text-decoration: none !important;
+    }
+}
+
+/* SweetAlert2 personalizado con tu paleta */
+.swal2-popup {
+    font-family: inherit !important;
+}
+
+.swal2-title {
+    color: #1f2937 !important;
+    font-weight: 600 !important;
+}
+
+.swal2-content {
+    color: #4b5563 !important;
+}
+
+.swal2-confirm {
+    background-color: #0284c7 !important;
+    /* primary-600 */
+    border: none !important;
+}
+
+.swal2-confirm:hover {
+    background-color: #0369a1 !important;
+    /* primary-700 */
+}
+
+.swal2-cancel {
+    background-color: #e5e7eb !important;
+    border: none !important;
+    color: #374151 !important;
+}
+
+.swal2-cancel:hover {
+    background-color: #d1d5db !important;
+}

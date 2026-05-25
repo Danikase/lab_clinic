@@ -1,0 +1,35 @@
+### Laravel & PHP ###
+.env*
+/.phpunit.result.cache
+/.phpunit.cache
+/vendor
+/storage/*.key
+/storage/app/public
+/storage/debugbar
+/storage/framework
+/storage/logs
+/storage/pail
+Homestead.json
+Homestead.yaml
+
+### Node.js ###
+/node_modules
+/public/build
+/public/hot
+/public/storage
+
+### IDEs & Editors ###
+/.idea
+/.vscode
+/.fleet
+/.zed
+.phpactor.json
+Thumbs.db
+.DS_Store
+
+### OS & Misc ###
+*.log
+auth.json
+
+### Nova (Laravel Admin) ###
+/.nova

@@ -17,6 +17,9 @@ export default function ResultEntry({ user, setUser }) {
   const [selectedExam, setSelectedExam] = useState(null);
   const [examData, setExamData] = useState(null);
 
+  // Tipo de muestra
+  const [sampleType, setSampleType] = useState('SANGRE');
+
   const [results, setResults] = useState([]);
   const [orderId, setOrderId] = useState(null);
 
@@ -42,6 +45,7 @@ export default function ResultEntry({ user, setUser }) {
     }
   };
 
+  // Cuando se selecciona un examen, cargar sus campos completos
   const handleExamChange = async (selected) => {
     setSelectedExam(selected);
     if (selected) {
@@ -77,10 +81,11 @@ export default function ResultEntry({ user, setUser }) {
     try {
       const { data } = await api.post('/lab-orders', {
         patient_id: selectedPatient.value,
-        exam_id: selectedExam.value
+        exam_id: selectedExam.value,
+        sample_type: sampleType, // ✅ Incluir tipo de muestra
       });
       
-      // ✅ Verificar que tengamos el order_id
+      // Verificar que tengamos el order_id
       const newOrderId = data.order_id || data.id;
       
       if (!newOrderId) {
@@ -90,7 +95,10 @@ export default function ResultEntry({ user, setUser }) {
       setOrderId(newOrderId);
       setExamData(data.exam);
       
-      const initialResults = data.exam.fields.map(field => ({
+      // Filtrar solo campos editables (is_reference = false)
+      const editableFields = data.exam.fields.filter(field => !field.is_reference);
+      
+      const initialResults = editableFields.map(field => ({
         field_name: field.field_name,
         value: '',
         ref_min: field.ref_min,
@@ -226,6 +234,7 @@ export default function ResultEntry({ user, setUser }) {
         </header>
 
         {step === 1 ? (
+          /* PASO 1: Selección de Paciente, Examen y Tipo de Muestra */
           <div className="bg-white p-6 rounded-xl shadow-sm border max-w-2xl mx-auto">
             <div className="space-y-6">
               <div>
@@ -254,6 +263,28 @@ export default function ResultEntry({ user, setUser }) {
                 />
               </div>
 
+              {/* ✅ SELECT DE TIPO DE MUESTRA */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Tipo de Muestra *
+                </label>
+                <select
+                  value={sampleType}
+                  onChange={(e) => setSampleType(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
+                >
+                  <option value="SANGRE">SANGRE</option>
+                  <option value="ORINA">ORINA</option>
+                  <option value="HECES">HECES</option>
+                  <option value="SEMEN">SEMEN</option>
+                  <option value="LCR">LÍQUIDO CEFALORRAQUÍDEO (LCR)</option>
+                  <option value="ESPERMA">ESPERMA</option>
+                  <option value="LIQUIDO_SINOVIAL">LÍQUIDO SINOVIAL</option>
+                  <option value="LIQUIDO_PLEURAL">LÍQUIDO PLEURAL</option>
+                  <option value="OTRO">OTRO</option>
+                </select>
+              </div>
+
               <div className="flex justify-end space-x-3 pt-4">
                 <button onClick={() => navigate('/orders')} className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50">Cancelar</button>
                 <button 
@@ -267,6 +298,7 @@ export default function ResultEntry({ user, setUser }) {
             </div>
           </div>
         ) : (
+          /* PASO 2: Ingreso de Resultados */
           <div className="bg-white p-6 rounded-xl shadow-sm border">
             <div className="mb-6 pb-4 border-b flex justify-between items-center">
               <h3 className="text-lg font-semibold text-gray-900">Ingreso de Resultados</h3>
@@ -277,7 +309,31 @@ export default function ResultEntry({ user, setUser }) {
               </div>
             </div>
 
-            {examData?.fields?.length === 0 ? (
+            {/* ✅ MOSTRAR TIPO DE MUESTRA SELECCIONADO */}
+            <div className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+              <p className="text-sm text-blue-800">
+                <span className="font-semibold">Muestra:</span> {sampleType}
+              </p>
+            </div>
+
+            {/* ✅ MOSTRAR CAMPOS DE REFERENCIA (si existen) */}
+            {examData?.fields?.filter(f => f.is_reference).length > 0 && (
+              <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                <h4 className="text-sm font-semibold text-gray-700 mb-3">📋 Valores de Referencia:</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {examData.fields.filter(f => f.is_reference).map((field, idx) => (
+                    <div key={idx} className="text-sm">
+                      <span className="font-medium text-gray-600">{field.field_name}:</span>
+                      <span className="ml-2 text-gray-800">
+                        {field.ref_min || '-'} - {field.ref_max || '-'} {field.unit}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {examData?.fields?.filter(f => !f.is_reference).length === 0 ? (
               <div className="text-center py-12">
                 <p className="text-gray-500">No hay campos configurados para este examen</p>
                 <button onClick={() => setStep(1)} className="mt-4 text-primary-600 hover:text-primary-700 font-medium">

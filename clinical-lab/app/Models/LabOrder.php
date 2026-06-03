@@ -11,7 +11,7 @@ class LabOrder extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['patient_id', 'exam_id', 'created_by', 'status', 'completed_at', 'unit_price'];
+    protected $fillable = ['patient_id', 'exam_id', 'sample_type', 'created_by', 'status', 'completed_at', 'unit_price'];
 
     protected $casts = [
         'unit_price' => 'decimal:2',

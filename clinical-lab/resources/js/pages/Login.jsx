@@ -38,16 +38,17 @@ export default function Login({ setUser }) {
         <div className="relative z-10 text-center max-w-md">
           {/* Icono/Logo placeholder */}
           <div className="mb-8 flex justify-center">
-            <div className="w-32 h-32 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
-              <svg className="w-20 h-20 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-              </svg>
+            <div className="w-32 h-32 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center overflow-hidden">
+              <img 
+                src="/img/logoColor.jpg" 
+                alt="Logo Laboratorio Alfaro" 
+                className="w-24 h-24 object-contain" 
+              />
             </div>
           </div>
           
           <h1 className="text-5xl font-bold mb-4">Laboratorio Clínico</h1>
           <p className="text-xl text-primary-100 mb-2">Sistema de Gestión de Laboratorio</p>
-          <p className="text-primary-200">Excelencia en análisis clínicos con tecnología de punta</p>
           
           {/* Características */}
           <div className="mt-12 space-y-4 text-left">
@@ -188,17 +189,6 @@ export default function Login({ setUser }) {
               )}
             </button>
           </form>
-
-          {/* Usuarios de prueba */}
-          <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200">
-            <p className="text-sm font-medium text-gray-700 text-center mb-3">👥 Usuarios de Prueba:</p>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between items-center bg-gray-50 px-3 py-2 rounded">
-                <span className="text-gray-600">Administrador:</span>
-                <span className="font-mono text-primary-600 font-medium">admin@lab.com / 12345678</span>
-              </div>
-            </div>
-          </div>
 
           {/* Footer */}
           <div className="text-center">

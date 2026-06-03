@@ -17,7 +17,8 @@ class Exam extends Model
         'category',
         'description',
         'price',
-        'is_active'
+        'is_active',
+        'template_type'
     ];
 
     protected $casts = [

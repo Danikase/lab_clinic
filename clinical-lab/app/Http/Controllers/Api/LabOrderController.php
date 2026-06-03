@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
+use Carbon\Carbon;
 
 class LabOrderController extends Controller
 {
@@ -274,26 +275,82 @@ class LabOrderController extends Controller
     {
         $order->load(['patient', 'exam.fields', 'results']);
 
-        // Preparar datos ordenados para la vista
+        // Calcular edad del paciente
+        $ageText = 'N/A';
+        if ($order->patient->birth_date) {
+            try {
+                $ageText = Carbon::parse($order->patient->birth_date)->age . ' años';
+            } catch (\Exception $e) {
+                $ageText = $order->patient->birth_date;
+            }
+        }
+
+        // Preparar datos de los resultados
         $reportData = $order->exam->fields->map(function ($field) use ($order) {
             $result = $order->results->firstWhere('field_name', $field->field_name);
             return [
                 'name' => $field->field_name,
                 'unit' => $field->unit,
-                'ref_range' => ($field->ref_min ?? '-') . ' - ' . ($field->ref_max ?? '-'),
+                'ref_min' => $field->ref_min,
+                'ref_max' => $field->ref_max,
                 'value' => $result?->value ?? '-',
-                'status' => $result?->reference_status ?? 'na'
+                'is_reference' => $field->is_reference ?? false,
             ];
         });
 
-        $pdf = PDF::loadView('pdf.lab_report', [
+        // Cargar logo de marca de agua (si existe)
+        $logoPath = public_path('img/logo.jpg');
+        $logoBase64 = null;
+
+        if (file_exists($logoPath)) {
+            try {
+                $imageData = file_get_contents($logoPath);
+                $logoBase64 = 'data:image/jpg;base64,' . base64_encode($imageData);
+            } catch (\Exception $e) {
+                Log::error('Error cargando logo watermark: ' . $e->getMessage());
+            }
+        }
+
+        // Cargar logo de color para encabezado (si existe)
+        $headerLogoPath = public_path('img/logoColor.jpg');
+        $headerLogoBase64 = null;
+
+        if (file_exists($headerLogoPath)) {
+            try {
+                $imageData = file_get_contents($headerLogoPath);
+                $headerLogoBase64 = 'data:image/jpg;base64,' . base64_encode($imageData);
+            } catch (\Exception $e) {
+                Log::error('Error cargando logo header: ' . $e->getMessage());
+            }
+        }
+
+        // Determinar qué plantilla usar según el tipo de examen
+        $templateType = $order->exam->template_type ?? 'simple';
+        $allowedTemplates = ['simple', 'table', 'hemoglobin', 'card', 'espermograma'];
+
+        if (!in_array($templateType, $allowedTemplates)) {
+            $templateType = 'simple';
+        }
+
+        $template = 'pdf.templates.' . $templateType;
+
+        // Generar PDF con la plantilla correspondiente
+        $pdf = PDF::loadView($template, [
             'order' => $order,
             'reportData' => $reportData,
-            'date' => now()->format('d/m/Y H:i')
+            'ageText' => $ageText,
+            'date' => now()->format('d/m/Y'),
+            'logo' => $logoBase64,           // Para marca de agua
+            'header_logo' => $headerLogoBase64, // Para logo en encabezado
         ]);
 
-        // Configurar nombre del archivo
-        $filename = "Resultado_{$order->patient->dui}_{$order->exam->code}.pdf";
+        // Configurar tamaño de página
+        $pdf->setPaper('letter', 'portrait');
+
+        // Generar nombre del archivo
+        $filename = "Resultado_{$order->patient->first_name}_{$order->patient->last_name}_{$order->exam->code}.pdf";
+
+        // Descargar PDF
         return $pdf->download($filename);
     }
 }

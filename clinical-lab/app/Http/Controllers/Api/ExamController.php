@@ -57,6 +57,7 @@ class ExamController extends Controller
                         'ref_max' => $fieldData['ref_max'] ?? null,
                         'options' => $fieldData['options'] ?? null,
                         'is_required' => $fieldData['is_required'] ?? false,
+                        'is_reference' => $fieldData['is_reference'] ?? false,
                         'sort_order' => $fieldData['sort_order'] ?? $index,
                     ]);
                 }
@@ -110,6 +111,7 @@ class ExamController extends Controller
                         'ref_max' => $fieldData['ref_max'] ?? null,
                         'options' => $fieldData['options'] ?? null,
                         'is_required' => $fieldData['is_required'] ?? false,
+                        'is_reference' => $fieldData['is_reference'] ?? false,
                         'sort_order' => $fieldData['sort_order'] ?? $index,
                     ]);
                 }

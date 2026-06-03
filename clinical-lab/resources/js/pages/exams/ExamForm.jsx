@@ -15,6 +15,7 @@ export default function ExamForm({ user, setUser }) {
     category: '',
     description: '',
     price: '',
+    template_type: 'simple',
     is_active: true,
     fields: [],
   });
@@ -71,6 +72,7 @@ export default function ExamForm({ user, setUser }) {
           ref_min: '',
           ref_max: '',
           is_required: false,
+          is_reference: false,
         }
       ]
     }));
@@ -200,6 +202,23 @@ export default function ExamForm({ user, setUser }) {
                 {errors.price && <p className="mt-1 text-xs text-red-500">{errors.price[0]}</p>}
               </div>
               <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Tipo de Plantilla PDF *
+                </label>
+                <select
+                  name="template_type"
+                  value={formData.template_type}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
+                >
+                  <option value="simple">📄 Simple (1 resultado)</option>
+                  <option value="table">📊 Tabla</option>
+                  <option value="hemoglobin">📋 Con Referencias</option>
+                  <option value="card">🎫 Tarjeta (Tipeo Sanguíneo)</option>
+                  <option value="espermograma">🧫 Espermograma</option>
+                </select>
+              </div>
+              <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Categoría</label>
                 <input 
                   type="text" 
@@ -321,6 +340,17 @@ export default function ExamForm({ user, setUser }) {
                             className="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500" 
                           />
                           <span className="ml-1 text-xs font-medium text-gray-600">Req.</span>
+                        </label>
+                      </div>
+                      <div className="md:col-span-1 flex items-center pt-5">
+                        <label className="flex items-center cursor-pointer" title="Campo solo referencia (no editable)">
+                          <input 
+                            type="checkbox" 
+                            checked={field.is_reference} 
+                            onChange={(e) => handleFieldChange(index, 'is_reference', e.target.checked)} 
+                            className="w-4 h-4 text-amber-600 border-gray-300 rounded focus:ring-amber-500" 
+                          />
+                          <span className="ml-1 text-xs font-medium text-gray-600">Ref.</span>
                         </label>
                       </div>
                     </div>

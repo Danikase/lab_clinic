@@ -231,6 +231,11 @@ export default function ExamForm({ user, setUser }) {
                   <option value="hemoglobin">📋 Con Referencias</option>
                   <option value="card">🎫 Tarjeta (Tipeo Sanguíneo)</option>
                   <option value="espermograma">🧫 Espermograma</option>
+                  <option value="heces">🪴 Heces</option>
+                  <option value="frotis">🔬 Frotis Sanguíneo</option>
+                  <option value="cultivo"> Cultivo</option>
+                  <option value="orina">🧪 Orina General</option>
+
                 </select>
               </div>
               <div>

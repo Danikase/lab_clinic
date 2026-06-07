@@ -328,7 +328,7 @@ class LabOrderController extends Controller
 
         // Determinar qué plantilla usar según el tipo de examen
         $templateType = $order->exam->template_type ?? 'simple';
-        $allowedTemplates = ['simple', 'table', 'hemoglobin', 'card', 'espermograma'];
+        $allowedTemplates = ['simple', 'table', 'hemoglobin', 'card', 'espermograma', 'heces', 'frotis', 'cultivo', 'orina'];
 
         if (!in_array($templateType, $allowedTemplates)) {
             $templateType = 'simple';

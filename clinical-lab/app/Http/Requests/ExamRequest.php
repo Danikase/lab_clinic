@@ -28,7 +28,7 @@ class ExamRequest extends FormRequest
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
             'is_active' => 'boolean',
-            'template_type' => 'nullable|string|in:simple,table,hemoglobin,card,espermograma',
+            'template_type' => 'nullable|string|in:simple,table,hemoglobin,card,espermograma,heces,frotis,cultivo,orina',
             'fields' => 'nullable|array',
             'fields.*.field_name' => 'required|string|max:100',
             'fields.*.field_type' => 'required|in:text,number,select,boolean,range',

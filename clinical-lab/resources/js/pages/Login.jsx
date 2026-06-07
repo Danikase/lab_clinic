@@ -26,19 +26,19 @@ export default function Login({ setUser }) {
 
   return (
     <div className="min-h-screen flex">
-      {/* Lado Izquierdo - Branding */}
-      <div className="hidden lg:flex lg:w-1/2 bg-primary-600 flex-col items-center justify-center p-12 text-black relative overflow-hidden">
-        {/* Patrón de fondo decorativo */}
+      {/* Lado Izquierdo - Branding con Azul Institucional */}
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-blue-900 via-blue-800 to-blue-900 flex-col items-center justify-center p-12 text-white relative overflow-hidden">
+        {/* Patrón de fondo decorativo con amarillo/dorado */}
         <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-20 left-20 w-72 h-72 bg-black rounded-full blur-3xl"></div>
-          <div className="absolute bottom-20 right-20 w-96 h-96 bg-black rounded-full blur-3xl"></div>
+          <div className="absolute top-20 left-20 w-72 h-72 bg-yellow-400 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-20 right-20 w-96 h-96 bg-blue-400 rounded-full blur-3xl"></div>
         </div>
         
         {/* Contenido principal */}
         <div className="relative z-10 text-center max-w-md">
-          {/* Icono/Logo placeholder */}
+          {/* Logo */}
           <div className="mb-8 flex justify-center">
-            <div className="w-32 h-32 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center overflow-hidden">
+            <div className="w-32 h-32 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center overflow-hidden shadow-2xl">
               <img 
                 src="/img/logoColor.jpg" 
                 alt="Logo Laboratorio Alfaro" 
@@ -47,34 +47,34 @@ export default function Login({ setUser }) {
             </div>
           </div>
           
-          <h1 className="text-5xl font-bold mb-4">Laboratorio Clínico</h1>
-          <p className="text-xl text-primary-100 mb-2">Sistema de Gestión de Laboratorio</p>
+          <h1 className="text-5xl font-bold mb-4">Laboratorio Clínico Alfaro</h1>
+          <p className="text-xl text-yellow-300 mb-2">Sistema de Gestión de Laboratorio</p>
           
           {/* Características */}
           <div className="mt-12 space-y-4 text-left">
             <div className="flex items-center space-x-3">
-              <div className="w-6 h-6 bg-black/30 rounded-full flex items-center justify-center shrink-0">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-6 h-6 bg-yellow-400/30 rounded-full flex items-center justify-center shrink-0">
+                <svg className="w-4 h-4 text-yellow-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <span className="text-primary-100">Resultados precisos y confiables</span>
+              <span className="text-blue-100">Resultados precisos y confiables</span>
             </div>
             <div className="flex items-center space-x-3">
-              <div className="w-6 h-6 bg-black/30 rounded-full flex items-center justify-center shrink-0">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-6 h-6 bg-yellow-400/30 rounded-full flex items-center justify-center shrink-0">
+                <svg className="w-4 h-4 text-yellow-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <span className="text-primary-100">Gestión integral de pacientes</span>
+              <span className="text-blue-100">Gestión integral de pacientes</span>
             </div>
             <div className="flex items-center space-x-3">
-              <div className="w-6 h-6 bg-black/30 rounded-full flex items-center justify-center shrink-0">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-6 h-6 bg-yellow-400/30 rounded-full flex items-center justify-center shrink-0">
+                <svg className="w-4 h-4 text-yellow-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <span className="text-primary-100">Plataforma segura y protegida</span>
+              <span className="text-blue-100">Plataforma segura y protegida</span>
             </div>
           </div>
         </div>
@@ -86,10 +86,12 @@ export default function Login({ setUser }) {
           {/* Header del formulario */}
           <div className="text-center">
             <div className="lg:hidden mb-6 flex justify-center">
-              <div className="w-20 h-20 bg-primary-100 rounded-xl flex items-center justify-center">
-                <svg className="w-12 h-12 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-                </svg>
+              <div className="w-20 h-20 bg-blue-100 rounded-xl flex items-center justify-center">
+                <img 
+                  src="/img/logoColor.jpg" 
+                  alt="Logo" 
+                  className="w-12 h-12 object-contain" 
+                />
               </div>
             </div>
             <h2 className="text-3xl font-bold text-gray-900">Iniciar Sesión</h2>
@@ -133,7 +135,7 @@ export default function Login({ setUser }) {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
+                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                     placeholder="tu@email.com"
                   />
                 </div>
@@ -158,18 +160,18 @@ export default function Login({ setUser }) {
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
+                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                     placeholder="••••••••"
                   />
                 </div>
               </div>
             </div>
 
-            {/* Botón de login */}
+            {/* Botón de login - COLOR DORADO/AMARILLO */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-black bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-yellow-500 hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <>

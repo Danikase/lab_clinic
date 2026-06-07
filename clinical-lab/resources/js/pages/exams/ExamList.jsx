@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import api from '../../lib/axios';
 import Sidebar from '../../components/layout/Sidebar';
 import { successAlert, errorAlert, confirmAlert } from '../../utils/alerts';
+import LoadingSpinner from '../../components/layout/LoadingSpinner'; 
 
 export default function ExamList({ user, setUser }) {
   const [exams, setExams] = useState([]);
@@ -54,12 +55,10 @@ export default function ExamList({ user, setUser }) {
     const currentPage = pagination.current_page;
     
     if (totalPages <= 7) {
-      // Si hay 7 o menos páginas, mostrar todas
       for (let i = 1; i <= totalPages; i++) {
         pages.push(i);
       }
     } else {
-      // Lógica para mostrar páginas con ellipsis
       if (currentPage <= 3) {
         pages.push(1, 2, 3, 4, '...', totalPages);
       } else if (currentPage >= totalPages - 2) {
@@ -80,8 +79,8 @@ export default function ExamList({ user, setUser }) {
   };
 
   const toggleStatus = async (exam) => {
-    try {
-      await api.put(`/exams/${exam.id}/toggle-status`);
+  try {
+      await api.post(`/exams/${exam.id}/toggle-status`);
       await successAlert(
         '✅ Actualizado', 
         `Examen ${exam.is_active ? 'desactivado' : 'activado'} correctamente`
@@ -118,12 +117,12 @@ export default function ExamList({ user, setUser }) {
         {/* Header */}
         <header className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">Catálogo de Exámenes</h2>
+            <h2 className="text-2xl font-bold text-blue-900">Catálogo de Exámenes</h2>
             <p className="text-sm text-gray-500 mt-1">Administra los exámenes y sus plantillas</p>
           </div>
           <Link
             to="/exams/new"
-            className="bg-primary-600 hover:bg-primary-700 text-black px-4 py-2.5 rounded-lg font-medium flex items-center gap-2 shadow-md transition-colors w-fit"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg font-medium flex items-center gap-2 shadow-md transition-colors w-fit"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -133,7 +132,7 @@ export default function ExamList({ user, setUser }) {
         </header>
 
         {/* Filtros */}
-        <div className="bg-white p-4 rounded-xl shadow-sm border mb-6 flex flex-wrap gap-4 items-end">
+        <div className="bg-white p-4 rounded-xl shadow-sm border border-blue-200 mb-6 flex flex-wrap gap-4 items-end">
           <div className="flex-1 min-w-[250px]">
             <label className="block text-xs font-medium text-gray-600 mb-1">🔍 Buscar</label>
             <input
@@ -141,7 +140,7 @@ export default function ExamList({ user, setUser }) {
               placeholder="Nombre o código..."
               value={filters.search}
               onChange={(e) => setFilters({ ...filters, search: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
             />
           </div>
           <div className="flex-1 min-w-[200px]">
@@ -149,7 +148,7 @@ export default function ExamList({ user, setUser }) {
             <select
               value={filters.is_active}
               onChange={(e) => setFilters({ ...filters, is_active: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
             >
               <option value="">Todos</option>
               <option value="1">Activos</option>
@@ -159,10 +158,10 @@ export default function ExamList({ user, setUser }) {
         </div>
 
         {/* Tabla de Exámenes */}
-        <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
+        <div className="bg-white rounded-xl shadow-sm border border-blue-200 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left">
-              <thead className="bg-gray-50 text-gray-700 text-sm uppercase tracking-wider">
+              <thead className="bg-blue-50 text-blue-900 text-sm uppercase tracking-wider border-b border-blue-100">
                 <tr>
                   <th className="px-6 py-3 font-bold">Código</th>
                   <th className="px-6 py-3 font-bold">Nombre</th>
@@ -173,11 +172,11 @@ export default function ExamList({ user, setUser }) {
                   <th className="px-6 py-3 font-bold text-right">Acciones</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200">
+              <tbody className="divide-y divide-blue-100">
                 {loading ? (
                   <tr>
-                    <td colSpan="7" className="px-6 py-12 text-center text-gray-500">
-                      ⏳ Cargando exámenes...
+                    <td colSpan="7" className="px-6 py-12">
+                      <LoadingSpinner message="Cargando exámenes..." />
                     </td>
                   </tr>
                 ) : exams.length === 0 ? (
@@ -188,63 +187,75 @@ export default function ExamList({ user, setUser }) {
                   </tr>
                 ) : (
                   exams.map((exam) => (
-                    <tr key={exam.id} className="hover:bg-gray-50 transition-colors">
+                    <tr key={exam.id} className="hover:bg-blue-50/50 transition-colors">
                       <td className="px-6 py-4 text-sm font-mono text-gray-600">{exam.code}</td>
                       <td className="px-6 py-4">
-                        <div className="text-sm font-medium text-gray-900">{exam.name}</div>
+                        <div className="text-sm font-medium text-blue-900">{exam.name}</div>
                         {exam.description && (
                           <div className="text-xs text-gray-500 mt-0.5 line-clamp-1">{exam.description}</div>
                         )}
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-700">{exam.category || '-'}</td>
                       <td className="px-6 py-4">
-                        <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                        <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 border border-blue-200">
                           {exam.fields_count || 0} campos
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                      <td className="px-6 py-4 text-sm font-medium text-blue-900">
                         ${parseFloat(exam.price || 0).toFixed(2)}
                       </td>
                       <td className="px-6 py-4">
-                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold ${
+                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold border ${
                           exam.is_active 
-                            ? 'bg-green-100 text-green-800' 
-                            : 'bg-red-100 text-red-800'
+                            ? 'bg-green-100 text-green-800 border-green-200' 
+                            : 'bg-red-100 text-red-800 border-red-200'
                         }`}>
                           {exam.is_active ? 'Activo' : 'Inactivo'}
                         </span>
                       </td>
                       <td className="px-6 py-4 text-right">
                         <div className="flex items-center justify-end gap-2">
-                          {/* Editar */}
+                          {/* Editar - AZUL */}
                           <Link
                             to={`/exams/${exam.id}/edit`}
                             className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
                             title="Editar examen"
                           >
-                            ✏️
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                            </svg>
                           </Link>
                           
-                          {/* Activar/Desactivar */}
+                          {/* Activar/Desactivar - AMARILLO/VERDE */}
                           <button
                             onClick={() => toggleStatus(exam)}
                             className={`p-1.5 rounded-md transition-colors ${
                               exam.is_active 
-                                ? 'text-amber-600 hover:bg-amber-50' 
+                                ? 'text-yellow-600 hover:bg-yellow-50' 
                                 : 'text-green-600 hover:bg-green-50'
                             }`}
                             title={exam.is_active ? 'Desactivar examen' : 'Activar examen'}
                           >
-                            {exam.is_active ? '🔓' : '🔒'}
+                            {exam.is_active ? (
+                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                              </svg>
+                            ) : (
+                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                              </svg>
+                            )}
                           </button>
                           
-                          {/* Eliminar */}
+                          {/* Eliminar - ROJO */}
                           <button
                             onClick={() => deleteExam(exam.id)}
                             className="p-1.5 text-red-600 hover:bg-red-50 rounded-md transition-colors"
                             title="Eliminar examen"
                           >
-                            🗑️
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
                           </button>
                         </div>
                       </td>
@@ -255,12 +266,12 @@ export default function ExamList({ user, setUser }) {
             </table>
           </div>
 
-          {/* PAGINACIÓN CON NÚMEROS */}
+          {/* PAGINACIÓN CON NÚMEROS - COLORES ALFARO */}
           {!loading && exams.length > 0 && (
-            <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between bg-gray-50">
+            <div className="px-6 py-4 border-t border-blue-200 flex items-center justify-between bg-blue-50/30">
               {/* Información */}
               <div className="text-sm text-gray-600">
-                Mostrando <span className="font-semibold">{pagination.total > 0 ? (pagination.current_page - 1) * pagination.per_page + 1 : 0}</span> - <span className="font-semibold">{Math.min(pagination.current_page * pagination.per_page, pagination.total)}</span> de <span className="font-semibold">{pagination.total}</span> exámenes
+                Mostrando <span className="font-medium text-blue-900">{pagination.total > 0 ? (pagination.current_page - 1) * pagination.per_page + 1 : 0}</span> - <span className="font-medium text-blue-900">{Math.min(pagination.current_page * pagination.per_page, pagination.total)}</span> de <span className="font-medium text-blue-900">{pagination.total}</span> exámenes
               </div>
 
               {/* Botones de paginación */}
@@ -269,7 +280,7 @@ export default function ExamList({ user, setUser }) {
                 <button
                   onClick={() => handlePageChange(1)}
                   disabled={pagination.current_page === 1}
-                  className="px-3 py-1.5 text-sm font-medium rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="px-3 py-1.5 text-sm font-medium rounded-lg border border-blue-200 bg-white text-blue-700 hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   ««
                 </button>
@@ -278,7 +289,7 @@ export default function ExamList({ user, setUser }) {
                 <button
                   onClick={() => handlePageChange(pagination.current_page - 1)}
                   disabled={pagination.current_page === 1}
-                  className="px-3 py-1.5 text-sm font-medium rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="px-3 py-1.5 text-sm font-medium rounded-lg border border-blue-200 bg-white text-blue-700 hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   «
                 </button>
@@ -291,10 +302,10 @@ export default function ExamList({ user, setUser }) {
                     disabled={page === '...'}
                     className={`px-3 py-1.5 text-sm font-medium rounded-lg border transition-colors ${
                       page === pagination.current_page
-                        ? 'bg-primary-600 border-primary-600 text-white'
+                        ? 'bg-blue-600 border-blue-600 text-white'
                         : page === '...'
-                        ? 'border-gray-300 bg-gray-100 text-gray-500 cursor-default'
-                        : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
+                        ? 'border-blue-200 bg-blue-50 text-gray-500 cursor-default'
+                        : 'border-blue-200 bg-white text-blue-700 hover:bg-blue-50'
                     }`}
                   >
                     {page}
@@ -305,7 +316,7 @@ export default function ExamList({ user, setUser }) {
                 <button
                   onClick={() => handlePageChange(pagination.current_page + 1)}
                   disabled={pagination.current_page === pagination.last_page}
-                  className="px-3 py-1.5 text-sm font-medium rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="px-3 py-1.5 text-sm font-medium rounded-lg border border-blue-200 bg-white text-blue-700 hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   »
                 </button>
@@ -314,7 +325,7 @@ export default function ExamList({ user, setUser }) {
                 <button
                   onClick={() => handlePageChange(pagination.last_page)}
                   disabled={pagination.current_page === pagination.last_page}
-                  className="px-3 py-1.5 text-sm font-medium rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="px-3 py-1.5 text-sm font-medium rounded-lg border border-blue-200 bg-white text-blue-700 hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   »»
                 </button>

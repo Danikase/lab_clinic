@@ -10,89 +10,137 @@
             color: #000;
             margin: 0;
             padding: 25px 35px;
+            position: relative;
         }
 
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-            line-height: 1.3;
+        /* Encabezado de 3 columnas */
+        .header-table {
+            width: 100%;
+            margin-bottom: 8px;
+            color: #1e3a8a;
         }
 
-        .lab-name {
-            font-size: 14px;
+        .header-table td {
+            vertical-align: top;
+            padding: 2px;
+        }
+
+        .lab-title {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 15px;
             font-weight: bold;
-            text-transform: uppercase;
+            text-align: center;
             margin: 0;
+            text-transform: uppercase;
+            color: #1e3a8a;
         }
 
         .lab-sub {
-            font-size: 16px;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 17px;
             font-weight: bold;
-            margin: 5px 0 10px;
+            text-align: center;
+            margin: 2px 0 4px;
+            color: #1e3a8a;
         }
 
-        .watermark {
-            position: absolute;
-            top: 45%;
-            /* Centrado vertical (un poco más abajo del centro) */
-            left: 50%;
-            /* Centrado horizontal */
-            transform: translate(-50%, -50%);
-            width: 280px;
-            /* Tamaño ajustado para que no tape el texto */
-            opacity: 0.4;
-            /* Muy transparente para que el texto se lea bien */
-            z-index: 0;
-            /* Se queda al fondo */
-            pointer-events: none;
-            /* No interfiere con clicks */
-        }
-
-        .lab-info {
-            font-size: 9px;
-            margin: 2px 0;
-            line-height: 1.4;
-        }
-
-        .license {
+        .license-text {
+            font-family: 'Times New Roman', Times, serif;
             font-size: 10px;
-            font-weight: bold;
-            margin-top: 10px;
+            text-align: center;
+            font-style: italic;
+            margin-top: 4px;
+            color: #1e3a8a;
         }
 
-        /* Datos del paciente */
+        .schedule-text,
+        .address-text {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 9px;
+            line-height: 1.4;
+            color: #1e3a8a;
+        }
+
+        .schedule-text {
+            text-align: right;
+        }
+
+        .address-text {
+            text-align: left;
+        }
+
+        /* Línea separadora */
+        .separator {
+            border-bottom: 2px solid #1e3a8a;
+            margin: 8px 0 15px 0;
+        }
+
+        /* Datos del paciente con líneas inferiores */
         .patient-table {
             width: 100%;
+            margin-bottom: 20px;
             border-collapse: collapse;
-            margin-bottom: 15px;
         }
 
         .patient-table td {
-            padding: 3px 5px;
-            border-bottom: 1px solid #000;
+            padding: 4px 2px;
+            font-family: 'Times New Roman', Times, serif;
             font-size: 11px;
+            color: #1e3a8a;
+            vertical-align: bottom;
         }
 
-        .label {
-            font-weight: bold;
-            width: 80px;
+        .patient-line {
+            border-bottom: 1px solid #1e3a8a;
+            width: 100%;
+            display: inline-block;
+            min-height: 14px;
+        }
+
+        /* Marca de agua */
+        .watermark {
+            position: absolute;
+            top: 45%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 280px;
+            opacity: 0.35;
+            z-index: 0;
+            pointer-events: none;
         }
 
         /* Título del examen */
         .exam-title {
             font-weight: bold;
-            margin: 15px 0 10px;
             text-transform: uppercase;
             font-size: 12px;
-            border-top: 2px solid #000;
-            padding-top: 8px;
+            margin: 15px 0 10px;
+            text-decoration: underline;
+            color: #000;
+            position: relative;
+            z-index: 1;
         }
 
         /* Tabla de resultados en 2 columnas */
-        .results-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
+        .results-container {
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .results-table-wrapper {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .results-table-wrapper td {
+            width: 50%;
+            vertical-align: top;
+            padding: 0 10px 0 0;
+        }
+
+        .results-table-wrapper td:last-child {
+            padding-right: 0;
         }
 
         .result-table {
@@ -101,16 +149,18 @@
         }
 
         .result-table td {
-            border: 1px solid #ccc;
+            border: 1px solid #1e3a8a;
             padding: 4px 6px;
             text-align: left;
             font-size: 10px;
+            color: #000;
         }
 
         .result-table td:first-child {
             font-weight: bold;
             text-transform: uppercase;
             width: 60%;
+            color: #1e3a8a;
         }
 
         .result-table td:nth-child(2) {
@@ -131,11 +181,15 @@
             margin-top: 50px;
             text-align: right;
             padding-right: 40px;
+            font-family: 'Times New Roman', Times, serif;
+            color: #1e3a8a;
+            position: relative;
+            z-index: 1;
         }
 
         .sign-line {
             width: 200px;
-            border-top: 1px solid #000;
+            border-top: 1px solid #1e3a8a;
             margin: 0 auto 5px;
         }
 
@@ -147,68 +201,115 @@
 </head>
 
 <body>
-    <!-- LOGO COMO IMAGEN BASE64 -->
+    <!-- LOGO / MARCA DE AGUA -->
     @if($logo)
-    <img src="{{ $logo }}" class="logo-header" alt="Logo Laboratorio Alfaro">
+    <img src="{{ $logo }}" class="watermark" alt="Logo Laboratorio Alfaro">
     @endif
 
-    <!-- ENCABEZADO -->
-    <div class="header">
-        <div class="lab-name">LABORATORIO DE ANÁLISIS CLÍNICO</div>
-        <div class="lab-sub">"ALFARO"</div>
-        <div class="lab-info">
-            Dirección: 1° Avenida Norte # 11 – B Barrio Las Ánimas, Chalchuapa<br>
-            Horario: Lunes a Viernes 7:00 a.m. a 12:00 m. y 2:00 p.m. a 4:00 p.m.<br>
-            Sábado: 7:00 a.m. – 12:00 m.
-        </div>
-        <div class="license">C.S.S.P. N° 839 &nbsp;&nbsp; Lic. Luis Alejandro Alfaro &nbsp;&nbsp; J.V.P.L.C.1137</div>
-    </div>
+    <!-- ENCABEZADO 3 COLUMNAS -->
+    <table class="header-table">
+        <tr>
+            <!-- Izquierda: Dirección -->
+            <td width="30%" class="address-text">
+                <strong>DIRECCIÓN</strong><br>
+                1° Avenida Norte # 11 – B<br>
+                Barrio Las Ánimas, Chalchuapa
+            </td>
 
-    <!-- DATOS DEL PACIENTE -->
-    <table class="patient-table">
-        <tr>
-            <td class="label">Paciente:</td>
-            <td colspan="5">{{ $order->patient->first_name }} {{ $order->patient->last_name }}</td>
-        </tr>
-        <tr>
-            <td class="label">Edad:</td>
-            <td>{{ $ageText }}</td>
-            <td class="label">Sexo:</td>
-            <td>{{ strtoupper(substr($order->patient->gender, 0, 1)) }}</td>
-            <td class="label">Fecha:</td>
-            <td>{{ $date }}</td>
-        </tr>
-        <tr>
-            <td class="label">Muestra de:</td>
-            <td colspan="5"><strong>{{ strtoupper($order->sample_type ?? 'SANGRE') }}</strong></td>
+            <!-- Centro: Título y Licencias -->
+            <td width="40%">
+                <h1 class="lab-title">LABORATORIO DE ANÁLISIS CLÍNICO</h1>
+                <h2 class="lab-sub">"ALFARO"</h2>
+                <div style="text-align: center; font-weight: bold; font-size: 11px; color: #1e3a8a;">C.S.S.P. N° 839</div>
+                <div class="license-text">Lic. Luis Alejandro Alfaro &nbsp; J.V.P.L.C.1137</div>
+            </td>
+
+            <!-- Derecha: Horario -->
+            <td width="30%" class="schedule-text">
+                <strong>HORARIO</strong><br>
+                Lunes a Viernes<br>
+                7:00 a.m. a 12:00 m.<br>
+                2:00 p.m. a 4:00 p.m.<br>
+                Sábado: 7:00 a.m. – 12:00 m
+            </td>
         </tr>
     </table>
+
+    <!-- LÍNEA SEPARADORA -->
+    <div class="separator"></div>
+
+    <!-- DATOS DEL PACIENTE (Líneas inferiores) -->
+    <table class="patient-table">
+        <tr>
+            <td width="15%"><strong>Paciente:</strong></td>
+            <td style="border-bottom: 1px solid #1e3a8a; padding-left: 8px;">
+                {{ $order->patient->first_name }} {{ $order->patient->last_name }}
+            </td>
+        </tr>
+        <tr>
+            <td><strong>Edad:</strong></td>
+            <td style="border-bottom: 1px solid #1e3a8a; padding-left: 8px;">{{ $ageText }}</td>
+            <td width="10%"><strong>Sexo:</strong></td>
+            <td width="10%" style="border-bottom: 1px solid #1e3a8a; text-align: center;">
+                @php
+                $gender = strtoupper($order->patient->gender ?? 'O');
+                $displayGender = ($gender === 'M') ? 'M' : (($gender === 'F') ? 'F' : '-');
+                @endphp
+                {{ $displayGender }}
+            </td>
+            <td width="12%"><strong>Fecha:</strong></td>
+            <td style="border-bottom: 1px solid #1e3a8a; padding-left: 8px;">{{ $date }}</td>
+        </tr>
+        <tr>
+            <td><strong>Muestra de:</strong></td>
+            <td colspan="5" style="border-bottom: 1px solid #1e3a8a; padding-left: 8px;">
+                <strong>
+                    @if(!empty($order->sample_type))
+                    {{ strtoupper($order->sample_type) }}
+                    @else
+                    <span style="color: #999; font-style: italic;">No especificado</span>
+                    @endif
+                </strong>
+            </td>
+        </tr>
+    </table>
+
+    <!-- ... (todo el encabezado y datos del paciente igual que antes) ... -->
 
     <!-- TÍTULO DEL EXAMEN -->
     <div class="exam-title">{{ strtoupper($order->exam->name) }}</div>
 
-    <!-- RESULTADOS EN 2 COLUMNAS -->
-    <div class="results-grid">
-        <!-- Columna izquierda -->
-        <table class="result-table">
-            @foreach($reportData->take(ceil($reportData->count()/2)) as $item)
+    <!-- RESULTADOS EN 2 COLUMNAS (CORREGIDO PARA DOMPDF) -->
+    <div class="results-container">
+        <table class="results-table-wrapper">
             <tr>
-                <td>{{ strtoupper($item['name']) }}</td>
-                <td>{{ $item['value'] }}</td>
-                <td>{{ $item['unit'] }}</td>
-            </tr>
-            @endforeach
-        </table>
+                <!-- Columna izquierda -->
+                <td>
+                    <table class="result-table">
+                        @php $half = ceil(count($reportData) / 2); @endphp
+                        @foreach($reportData->take($half) as $item)
+                        <tr>
+                            <td>{{ strtoupper($item['name']) }}</td>
+                            <td>{{ $item['value'] }}</td>
+                            <td>{{ $item['unit'] }}</td>
+                        </tr>
+                        @endforeach
+                    </table>
+                </td>
 
-        <!-- Columna derecha -->
-        <table class="result-table">
-            @foreach($reportData->skip(ceil($reportData->count()/2)) as $item)
-            <tr>
-                <td>{{ strtoupper($item['name']) }}</td>
-                <td>{{ $item['value'] }}</td>
-                <td>{{ $item['unit'] }}</td>
+                <!-- Columna derecha -->
+                <td>
+                    <table class="result-table">
+                        @foreach($reportData->skip($half) as $item)
+                        <tr>
+                            <td>{{ strtoupper($item['name']) }}</td>
+                            <td>{{ $item['value'] }}</td>
+                            <td>{{ $item['unit'] }}</td>
+                        </tr>
+                        @endforeach
+                    </table>
+                </td>
             </tr>
-            @endforeach
         </table>
     </div>
 

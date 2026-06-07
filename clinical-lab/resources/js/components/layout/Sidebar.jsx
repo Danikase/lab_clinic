@@ -18,25 +18,25 @@ export default function Sidebar({ user, setUser }) {
   const linkClass = (path) => 
     `flex items-center space-x-3 px-4 py-3 rounded-lg font-medium transition-all ${
       isActive(path) 
-        ? 'bg-white/25 text-gray-900 shadow-md' 
-        : 'text-gray-900 hover:bg-white/10'
+        ? 'bg-white/20 text-white shadow-md' 
+        : 'text-blue-100 hover:bg-blue-800/50 hover:text-white'
     }`;
 
   return (
-    <aside className="w-64 bg-primary-600 text-gray-900 min-h-screen fixed left-0 top-0 shadow-xl z-50 flex flex-col">
+    <aside className="w-64 bg-gradient-to-b from-blue-900 via-blue-900 to-blue-950 text-white min-h-screen fixed left-0 top-0 shadow-2xl z-50 flex flex-col border-r border-blue-800">
       {/* Logo Area */}
-      <div className="p-6 border-b border-primary-500">
+      <div className="p-6 border-b border-blue-700/50">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-white/90 rounded-lg flex items-center justify-center shadow-sm">
+          <div className="w-12 h-12 bg-white/90 backdrop-blur-sm rounded-xl flex items-center justify-center shadow-lg">
             <img 
               src="/img/logoColor.jpg" 
-              alt="Logo LabClinic" 
-              className="w-16 h-16 object-contain" 
+              alt="Logo Laboratorio Alfaro" 
+              className="w-8 h-8 object-contain" 
             />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-gray-900 tracking-tight">LabClinic</h1>
-            <p className="text-[10px] uppercase tracking-wider font-bold text-gray-800">Sistema de Gestión</p>
+            <h1 className="text-lg font-bold text-white tracking-tight">Laboratorio Alfaro</h1>
+            <p className="text-[10px] uppercase tracking-wider font-semibold text-yellow-300">Sistema de Gestión</p>
           </div>
         </div>
       </div>
@@ -75,7 +75,7 @@ export default function Sidebar({ user, setUser }) {
           <span>Resultados</span>
         </Link>
 
-        {/* Después de Órdenes/Resultados */}
+        {/* Consultas */}
         <Link to="/appointments" className={linkClass('/appointments')}>
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -85,30 +85,32 @@ export default function Sidebar({ user, setUser }) {
       </nav>
 
       {/* User Profile Bottom */}
-      <div className="p-4 border-t border-primary-500 bg-primary-500/50">
-        <div className="flex items-center space-x-3 mb-3">
-          <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm">
-            <span className="text-primary-600 font-bold">{user?.name?.charAt(0) || 'U'}</span>
+      <div className="p-4 border-t border-blue-700/50 bg-blue-800/30">
+        <div className="flex items-center space-x-3 mb-4">
+          <div className="w-10 h-10 bg-yellow-500/20 rounded-full flex items-center justify-center border-2 border-yellow-400/50 shadow-lg">
+            <span className="text-yellow-300 font-bold text-lg">{user?.name?.charAt(0) || 'U'}</span>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-bold text-gray-900 truncate">{user?.name}</p>
-            <p className="text-xs text-gray-800 truncate capitalize">{user?.role}</p>
+            <p className="text-sm font-bold text-white truncate">{user?.name}</p>
+            <p className="text-xs text-blue-200 truncate capitalize">{user?.role}</p>
           </div>
         </div>
-        <div className="p-4 border-t border-gray-200">
-          <Link 
-            to="/profile" 
-            className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 transition-colors text-gray-700"
-          >
-            <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-gray-600">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
-            </div>
-            <span className="text-sm font-medium">Mi Perfil</span>
-          </Link>
-        </div>
+        
+        <Link 
+          to="/profile" 
+          className="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-700/50 transition-colors text-blue-100 mb-2"
+        >
+          <div className="w-8 h-8 bg-blue-700/50 rounded-full flex items-center justify-center">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+          </div>
+          <span className="text-sm font-medium">Mi Perfil</span>
+        </Link>
+        
         <button 
           onClick={handleLogout}
-          className="w-full flex items-center justify-center space-x-2 py-2 text-sm font-medium text-red-700 bg-white/80 hover:bg-white rounded-lg transition-colors shadow-sm"
+          className="w-full flex items-center justify-center space-x-2 py-2.5 text-sm font-semibold text-white bg-red-600 hover:bg-red-700 rounded-lg transition-all shadow-md hover:shadow-red-600/20"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />

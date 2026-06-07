@@ -89,37 +89,55 @@ export default function ResultContinue({ user, setUser }) {
   const getStatusColor = (status) => {
     switch (status) {
       case 'normal': return 'border-green-500 bg-green-50 text-green-800';
-      case 'low': return 'border-amber-500 bg-amber-50 text-amber-800';
+      case 'low': return 'border-yellow-500 bg-yellow-50 text-yellow-800';
       case 'high': return 'border-red-500 bg-red-50 text-red-800';
       default: return 'border-gray-300 bg-white text-gray-900';
     }
   };
 
-  if (loading) return <div className="flex items-center justify-center h-screen text-gray-500">⏳ Cargando orden...</div>;
+  if (loading) return (
+    <div className="flex items-center justify-center h-screen bg-gray-50">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-blue-600 mx-auto mb-4"></div>
+        <p className="text-blue-900 font-medium">Cargando orden...</p>
+      </div>
+    </div>
+  );
+  
   if (!order) return null;
 
   return (
     <div className="flex min-h-screen bg-gray-50">
       <Sidebar user={user} setUser={setUser} />
       <div className="flex-1 ml-64 p-8">
-        <button onClick={() => navigate('/orders')} className="mb-6 text-gray-600 hover:text-gray-900 flex items-center font-medium">
-          ← Volver a Órdenes
+        
+        {/* Botón de regreso */}
+        <button 
+          onClick={() => navigate('/orders')} 
+          className="mb-6 text-blue-600 hover:text-blue-700 flex items-center font-medium transition-colors"
+        >
+          <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          Volver a Órdenes
         </button>
 
-        <div className="bg-white p-6 rounded-xl shadow-sm border mb-6">
-          <h2 className="text-xl font-bold text-gray-900">Continuar Orden #{order.id}</h2>
+        {/* Header de la orden */}
+        <div className="bg-white p-6 rounded-xl shadow-sm border border-blue-200 mb-6 hover:shadow-md transition-shadow">
+          <h2 className="text-xl font-bold text-blue-900">Continuar Orden #{order.id}</h2>
           <p className="text-sm text-gray-600 mt-1">
-            Paciente: <strong>{order.patient?.first_name} {order.patient?.last_name}</strong> | 
-            Examen: <strong>{order.exam?.name}</strong>
+            Paciente: <strong className="text-blue-900">{order.patient?.first_name} {order.patient?.last_name}</strong> | 
+            Examen: <strong className="text-blue-900">{order.exam?.name}</strong>
           </p>
         </div>
 
-        <div className="bg-white p-6 rounded-xl shadow-sm border">
-          <div className="mb-6 pb-4 border-b flex justify-between items-center">
-            <h3 className="text-lg font-semibold text-gray-900">Ingreso de Resultados</h3>
+        {/* Formulario de resultados */}
+        <div className="bg-white p-6 rounded-xl shadow-sm border border-blue-200 hover:shadow-md transition-shadow">
+          <div className="mb-6 pb-4 border-b border-blue-100 flex justify-between items-center">
+            <h3 className="text-lg font-semibold text-blue-900">Ingreso de Resultados</h3>
             <div className="flex space-x-3 text-xs font-medium">
               <span className="flex items-center"><span className="w-2.5 h-2.5 bg-green-500 rounded-full mr-1.5"></span> Normal</span>
-              <span className="flex items-center"><span className="w-2.5 h-2.5 bg-amber-500 rounded-full mr-1.5"></span> Bajo</span>
+              <span className="flex items-center"><span className="w-2.5 h-2.5 bg-yellow-500 rounded-full mr-1.5"></span> Bajo</span>
               <span className="flex items-center"><span className="w-2.5 h-2.5 bg-red-500 rounded-full mr-1.5"></span> Alto</span>
             </div>
           </div>
@@ -132,7 +150,11 @@ export default function ResultContinue({ user, setUser }) {
                     {field.field_name} {field.unit && <span className="text-gray-500 font-normal">({field.unit})</span>}
                     {field.is_required && <span className="text-red-500 ml-1">*</span>}
                   </span>
-                  {field.status !== 'na' && <span className="text-lg">{field.status === 'normal' ? '✅' : field.status === 'low' ? '⬇️' : '⬆️'}</span>}
+                  {field.status !== 'na' && (
+                    <span className="text-lg">
+                      {field.status === 'normal' ? '✅' : field.status === 'low' ? '⬇️' : '⬆️'}
+                    </span>
+                  )}
                 </label>
                 <input
                   type={field.field_type === 'number' ? 'number' : 'text'}
@@ -149,10 +171,11 @@ export default function ResultContinue({ user, setUser }) {
             ))}
           </div>
 
-          <div className="flex justify-end space-x-3 mt-8 pt-6 border-t">
+          {/* Botones de acción */}
+          <div className="flex justify-end space-x-3 mt-8 pt-6 border-t border-blue-100">
             <button 
               onClick={() => navigate('/orders')} 
-              className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50"
+              className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-colors"
             >
               Cancelar
             </button>
@@ -160,7 +183,7 @@ export default function ResultContinue({ user, setUser }) {
             <button 
               onClick={handleSaveDraft} 
               disabled={loading} 
-              className="px-6 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg font-medium disabled:opacity-50 flex items-center gap-2"
+              className="px-6 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-all shadow-sm hover:shadow-yellow-500/20"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
@@ -171,7 +194,7 @@ export default function ResultContinue({ user, setUser }) {
             <button 
               onClick={handleSaveComplete} 
               disabled={loading} 
-              className="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium disabled:opacity-50 flex items-center gap-2"
+              className="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-all shadow-sm hover:shadow-green-500/20"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -180,6 +203,19 @@ export default function ResultContinue({ user, setUser }) {
             </button>
           </div>
         </div>
+
+        {/* Info adicional */}
+        <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+          <p className="text-sm text-blue-800 flex items-start">
+            <svg className="w-5 h-5 mr-2 mt-0.5 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>
+              <strong>Consejo:</strong> Los campos marcados con <span className="text-red-500">*</span> son obligatorios para completar la orden.
+            </span>
+          </p>
+        </div>
+
       </div>
     </div>
   );

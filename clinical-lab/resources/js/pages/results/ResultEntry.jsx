@@ -82,10 +82,9 @@ export default function ResultEntry({ user, setUser }) {
       const { data } = await api.post('/lab-orders', {
         patient_id: selectedPatient.value,
         exam_id: selectedExam.value,
-        sample_type: sampleType, // ✅ Incluir tipo de muestra
+        sample_type: sampleType,
       });
       
-      // Verificar que tengamos el order_id
       const newOrderId = data.order_id || data.id;
       
       if (!newOrderId) {
@@ -208,16 +207,16 @@ export default function ResultEntry({ user, setUser }) {
   const getStatusColor = (status) => {
     switch (status) {
       case 'normal': return 'border-green-500 bg-green-50 text-green-800';
-      case 'low': return 'border-amber-500 bg-amber-50 text-amber-800';
+      case 'low': return 'border-yellow-500 bg-yellow-50 text-yellow-800';
       case 'high': return 'border-red-500 bg-red-50 text-red-800';
       default: return 'border-gray-300 bg-white text-gray-900';
     }
   };
 
   const selectClassNames = {
-    control: (state) => `min-h-[42px] border rounded-lg px-2 cursor-pointer ${state.isFocused ? 'border-primary-500 ring-2 ring-primary-500/20' : 'border-gray-300 hover:border-gray-400'}`,
+    control: (state) => `min-h-[42px] border rounded-lg px-2 cursor-pointer ${state.isFocused ? 'border-blue-500 ring-2 ring-blue-500/20' : 'border-gray-300 hover:border-gray-400'}`,
     menu: () => 'bg-white shadow-xl rounded-lg mt-1 border border-gray-200 z-50',
-    option: (state) => `px-3 py-2 cursor-pointer text-sm ${state.isFocused ? 'bg-primary-50 text-primary-700' : 'text-gray-700'} ${state.isSelected ? 'bg-primary-100 font-medium' : ''}`,
+    option: (state) => `px-3 py-2 cursor-pointer text-sm ${state.isFocused ? 'bg-blue-50 text-blue-700' : 'text-gray-700'} ${state.isSelected ? 'bg-blue-100 font-medium' : ''}`,
     placeholder: () => 'text-gray-400 text-sm',
     singleValue: () => 'text-gray-900 text-sm',
     input: () => 'text-sm',
@@ -228,14 +227,14 @@ export default function ResultEntry({ user, setUser }) {
     <div className="flex min-h-screen bg-gray-50">
       <Sidebar user={user} setUser={setUser} />
       <div className="flex-1 ml-64 p-8">
-        <header className="bg-white shadow-sm border-b border-gray-200 px-6 py-4 -mx-8 -mt-8 mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">Nueva Orden de Laboratorio</h2>
+        <header className="bg-white shadow-sm border-b border-blue-100 px-6 py-4 -mx-8 -mt-8 mb-6">
+          <h2 className="text-2xl font-bold text-blue-900">Nueva Orden de Laboratorio</h2>
           <p className="text-sm text-gray-500">Selecciona paciente y examen para comenzar</p>
         </header>
 
         {step === 1 ? (
           /* PASO 1: Selección de Paciente, Examen y Tipo de Muestra */
-          <div className="bg-white p-6 rounded-xl shadow-sm border max-w-2xl mx-auto">
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-blue-200 max-w-2xl mx-auto hover:shadow-md transition-shadow">
             <div className="space-y-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Paciente *</label>
@@ -271,7 +270,7 @@ export default function ResultEntry({ user, setUser }) {
                 <select
                   value={sampleType}
                   onChange={(e) => setSampleType(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
                 >
                   <option value="SANGRE">SANGRE</option>
                   <option value="ORINA">ORINA</option>
@@ -286,11 +285,16 @@ export default function ResultEntry({ user, setUser }) {
               </div>
 
               <div className="flex justify-end space-x-3 pt-4">
-                <button onClick={() => navigate('/orders')} className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50">Cancelar</button>
+                <button 
+                  onClick={() => navigate('/orders')} 
+                  className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-colors"
+                >
+                  Cancelar
+                </button>
                 <button 
                   onClick={handleCreateOrder} 
                   disabled={loading || !selectedPatient || !selectedExam} 
-                  className="px-6 py-2 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 disabled:opacity-50 flex items-center gap-2"
+                  className="px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-all shadow-sm hover:shadow-blue-500/20"
                 >
                   {loading ? 'Creando...' : 'Continuar'}
                 </button>
@@ -299,12 +303,12 @@ export default function ResultEntry({ user, setUser }) {
           </div>
         ) : (
           /* PASO 2: Ingreso de Resultados */
-          <div className="bg-white p-6 rounded-xl shadow-sm border">
-            <div className="mb-6 pb-4 border-b flex justify-between items-center">
-              <h3 className="text-lg font-semibold text-gray-900">Ingreso de Resultados</h3>
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-blue-200 hover:shadow-md transition-shadow">
+            <div className="mb-6 pb-4 border-b border-blue-100 flex justify-between items-center">
+              <h3 className="text-lg font-semibold text-blue-900">Ingreso de Resultados</h3>
               <div className="flex space-x-3 text-xs font-medium">
                 <span className="flex items-center"><span className="w-2.5 h-2.5 bg-green-500 rounded-full mr-1.5"></span> Normal</span>
-                <span className="flex items-center"><span className="w-2.5 h-2.5 bg-amber-500 rounded-full mr-1.5"></span> Bajo</span>
+                <span className="flex items-center"><span className="w-2.5 h-2.5 bg-yellow-500 rounded-full mr-1.5"></span> Bajo</span>
                 <span className="flex items-center"><span className="w-2.5 h-2.5 bg-red-500 rounded-full mr-1.5"></span> Alto</span>
               </div>
             </div>
@@ -318,13 +322,16 @@ export default function ResultEntry({ user, setUser }) {
 
             {/* ✅ MOSTRAR CAMPOS DE REFERENCIA (si existen) */}
             {examData?.fields?.filter(f => f.is_reference).length > 0 && (
-              <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
-                <h4 className="text-sm font-semibold text-gray-700 mb-3">📋 Valores de Referencia:</h4>
+              <div className="mb-6 p-4 bg-blue-50/50 rounded-lg border border-blue-200">
+                <h4 className="text-sm font-semibold text-blue-900 mb-3 flex items-center">
+                  <span className="w-2 h-2 bg-yellow-500 rounded-full mr-2"></span>
+                  📋 Valores de Referencia
+                </h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {examData.fields.filter(f => f.is_reference).map((field, idx) => (
                     <div key={idx} className="text-sm">
-                      <span className="font-medium text-gray-600">{field.field_name}:</span>
-                      <span className="ml-2 text-gray-800">
+                      <span className="font-medium text-blue-900">{field.field_name}:</span>
+                      <span className="ml-2 text-gray-700">
                         {field.ref_min || '-'} - {field.ref_max || '-'} {field.unit}
                       </span>
                     </div>
@@ -336,7 +343,7 @@ export default function ResultEntry({ user, setUser }) {
             {examData?.fields?.filter(f => !f.is_reference).length === 0 ? (
               <div className="text-center py-12">
                 <p className="text-gray-500">No hay campos configurados para este examen</p>
-                <button onClick={() => setStep(1)} className="mt-4 text-primary-600 hover:text-primary-700 font-medium">
+                <button onClick={() => setStep(1)} className="mt-4 text-blue-600 hover:text-blue-700 font-medium transition-colors">
                   ← Volver y seleccionar otro examen
                 </button>
               </div>
@@ -371,24 +378,24 @@ export default function ResultEntry({ user, setUser }) {
                   ))}
                 </div>
 
-                <div className="flex justify-end space-x-3 mt-8 pt-6 border-t">
+                <div className="flex justify-end space-x-3 mt-8 pt-6 border-t border-blue-100">
                   <button 
                     onClick={handleBack} 
-                    className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50"
+                    className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-colors"
                   >
                     Atrás
                   </button>
                   <button 
                     onClick={handleSaveDraft} 
                     disabled={loading || buttonsDisabled || !orderId} 
-                    className="px-6 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                    className="px-6 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-all shadow-sm hover:shadow-yellow-500/20"
                   >
                     💾 Guardar Borrador
                   </button>
                   <button 
                     onClick={handleSaveComplete} 
                     disabled={loading || buttonsDisabled || !orderId} 
-                    className="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                    className="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-all shadow-sm hover:shadow-green-500/20"
                   >
                     ✅ Guardar y Completar
                   </button>

@@ -10,191 +10,279 @@
             color: #000;
             margin: 0;
             padding: 30px 40px;
+            position: relative;
         }
 
-        .header {
-            text-align: center;
-            margin-bottom: 25px;
-            line-height: 1.3;
+        /* Encabezado de 3 columnas */
+        .header-table {
+            width: 100%;
+            margin-bottom: 8px;
+            color: #1e3a8a;
+            /* Azul institucional */
         }
 
-        .lab-name {
-            font-size: 14px;
+        .header-table td {
+            vertical-align: top;
+            padding: 2px;
+        }
+
+        .lab-title {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 15px;
             font-weight: bold;
-            text-transform: uppercase;
+            text-align: center;
             margin: 0;
+            text-transform: uppercase;
+            color: #1e3a8a;
         }
 
         .lab-sub {
-            font-size: 16px;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 17px;
             font-weight: bold;
-            margin: 5px 0 10px;
+            text-align: center;
+            margin: 2px 0 4px;
+            color: #1e3a8a;
         }
 
-        .watermark {
-            position: absolute;
-            top: 45%;
-            /* Centrado vertical (un poco más abajo del centro) */
-            left: 50%;
-            /* Centrado horizontal */
-            transform: translate(-50%, -50%);
-            width: 280px;
-            /* Tamaño ajustado para que no tape el texto */
-            opacity: 0.4;
-            /* Muy transparente para que el texto se lea bien */
-            z-index: 0;
-            /* Se queda al fondo */
-            pointer-events: none;
-            /* No interfiere con clicks */
-        }
-
-        .lab-info {
-            font-size: 9px;
-            margin: 2px 0;
-            line-height: 1.4;
-        }
-
-        .license {
+        .license-text {
+            font-family: 'Times New Roman', Times, serif;
             font-size: 10px;
-            font-weight: bold;
-            margin-top: 10px;
+            text-align: center;
+            font-style: italic;
+            margin-top: 4px;
+            color: #1e3a8a;
         }
 
-        /* Datos del paciente */
+        .schedule-text,
+        .address-text {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 9px;
+            line-height: 1.4;
+            color: #1e3a8a;
+        }
+
+        .schedule-text {
+            text-align: right;
+        }
+
+        .address-text {
+            text-align: left;
+        }
+
+        /* Línea separadora */
+        .separator {
+            border-bottom: 2px solid #1e3a8a;
+            margin: 8px 0 15px 0;
+        }
+
+        /* Datos del paciente con líneas inferiores */
         .patient-table {
             width: 100%;
+            margin-bottom: 20px;
             border-collapse: collapse;
-            margin-bottom: 15px;
         }
 
         .patient-table td {
-            padding: 3px 5px;
-            border-bottom: 1px solid #000;
+            padding: 4px 2px;
+            font-family: 'Times New Roman', Times, serif;
             font-size: 11px;
+            color: #1e3a8a;
+            vertical-align: bottom;
         }
 
-        .label {
-            font-weight: bold;
-            width: 120px;
+        .patient-line {
+            border-bottom: 1px solid #1e3a8a;
+            width: 100%;
+            display: inline-block;
+            min-height: 14px;
         }
 
-        /* Sección de examen */
+        /* Marca de agua */
+        .watermark {
+            position: absolute;
+            top: 45%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 280px;
+            opacity: 0.35;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Contenido del examen */
         .exam-section {
-            margin-top: 20px;
-            border-top: 2px solid #000;
-            padding-top: 10px;
+            margin-top: 15px;
+            position: relative;
+            z-index: 1;
         }
 
         .exam-title {
             font-weight: bold;
-            margin-bottom: 15px;
             text-transform: uppercase;
             font-size: 12px;
+            margin-bottom: 10px;
+            text-decoration: underline;
+            color: #000;
         }
 
         .result-label {
             font-weight: bold;
-            margin-top: 15px;
             text-transform: uppercase;
+            margin-top: 10px;
         }
 
         .result-value {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: bold;
-            margin: 5px 0;
+            margin: 3px 0;
         }
 
-        /* Referencias */
+        /* Caja de referencias */
         .references-box {
-            margin-top: 25px;
-            border: 1px solid #999;
-            padding: 10px;
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 8px;
             background-color: #f9f9f9;
-        }
-
-        .ref-title {
-            text-align: center;
-            font-weight: bold;
-            margin-bottom: 8px;
-            text-transform: uppercase;
             font-size: 10px;
         }
 
-        .ref-row {
-            font-size: 10px;
-            margin-bottom: 4px;
-            line-height: 1.5;
-        }
-
-        /* Firma */
+        /* Pie de página / Firma */
         .footer {
-            margin-top: 40px;
+            margin-top: 50px;
             text-align: center;
+            font-family: 'Times New Roman', Times, serif;
+            color: #1e3a8a;
+            position: relative;
+            z-index: 1;
         }
 
         .sign-line {
-            width: 220px;
-            border-top: 1px solid #000;
+            width: 200px;
+            border-top: 1px solid #1e3a8a;
             margin: 0 auto 5px;
         }
     </style>
 </head>
 
 <body>
-    <!-- LOGO COMO IMAGEN BASE64 -->
+    <!-- LOGO / MARCA DE AGUA -->
     @if($logo)
-    <img src="{{ $logo }}" class="logo-header" alt="Logo Laboratorio Alfaro">
+    <img src="{{ $logo }}" class="watermark" alt="Logo Laboratorio Alfaro">
     @endif
 
-    <!-- ENCABEZADO -->
-    <div class="header">
-        <div class="lab-name">LABORATORIO DE ANÁLISIS CLÍNICO</div>
-        <div class="lab-sub">"ALFARO"</div>
-        <div class="lab-info">
-            Dirección: 1° Avenida Norte # 11 – B Barrio Las Ánimas, Chalchuapa<br>
-            Horario: Lunes a Viernes 7:00 a.m. a 12:00 m. y 2:00 p.m. a 4:00 p.m.<br>
-            Sábado: 7:00 a.m. – 12:00 m.
-        </div>
-        <div class="license">C.S.S.P. N° 839 &nbsp;&nbsp; Lic. Luis Alejandro Alfaro &nbsp;&nbsp; J.V.P.L.C.1137</div>
-    </div>
+    <!-- ENCABEZADO 3 COLUMNAS -->
+    <table class="header-table">
+        <tr>
+            <!-- Izquierda: Dirección -->
+            <td width="30%" class="address-text">
+                <strong>DIRECCIÓN</strong><br>
+                1° Avenida Norte # 11 – B<br>
+                Barrio Las Ánimas, Chalchuapa
+            </td>
 
-    <!-- DATOS DEL PACIENTE -->
-    <table class="patient-table">
-        <tr>
-            <td class="label">Paciente:</td>
-            <td colspan="3">{{ $order->patient->first_name }} {{ $order->patient->last_name }}</td>
-        </tr>
-        <tr>
-            <td class="label">Edad:</td>
-            <td>{{ $ageText }}</td>
-            <td class="label">Sexo:</td>
-            <td>{{ strtoupper(substr($order->patient->gender, 0, 1)) }}</td>
-            <td class="label">Fecha:</td>
-            <td>{{ $date }}</td>
-        </tr>
-        <tr>
-            <td class="label">Muestra de:</td>
-            <td colspan="5"><strong>{{ strtoupper($order->sample_type ?? 'SANGRE') }}</strong></td>
+            <!-- Centro: Título y Licencias -->
+            <td width="40%">
+                <h1 class="lab-title">LABORATORIO DE ANÁLISIS CLÍNICO</h1>
+                <h2 class="lab-sub">“ALFARO”</h2>
+                <div style="text-align: center; font-weight: bold; font-size: 11px; color: #1e3a8a;">C.S.S.P. N° 839</div>
+                <div class="license-text">Lic. Luis Alejandro Alfaro &nbsp; J.V.P.L.C.1137</div>
+            </td>
+
+            <!-- Derecha: Horario -->
+            <td width="30%" class="schedule-text">
+                <strong>HORARIO</strong><br>
+                Lunes a Viernes<br>
+                7:00 a.m. a 12:00 m.<br>
+                2:00 p.m. a 4:00 p.m.<br>
+                Sábado: 7:00 a.m. – 12:00 m
+            </td>
         </tr>
     </table>
 
-    <!-- EXAMEN Y RESULTADO -->
+    <!-- LÍNEA SEPARADORA -->
+    <div class="separator"></div>
+
+    <!-- DATOS DEL PACIENTE (Líneas inferiores) -->
+    <table class="patient-table">
+        <tr>
+            <td width="15%"><strong>Paciente:</strong></td>
+            <td style="border-bottom: 1px solid #1e3a8a; padding-left: 8px;">
+                {{ $order->patient->first_name }} {{ $order->patient->last_name }}
+            </td>
+        </tr>
+        <tr>
+            <td><strong>Edad:</strong></td>
+            <td style="border-bottom: 1px solid #1e3a8a; padding-left: 8px;">{{ $ageText }}</td>
+            <td width="10%"><strong>Sexo:</strong></td>
+            <td width="10%" style="border-bottom: 1px solid #1e3a8a; text-align: center;">
+                @php
+                $gender = strtoupper($order->patient->gender ?? 'O');
+                $displayGender = ($gender === 'M') ? 'M' : (($gender === 'F') ? 'F' : '-');
+                @endphp
+                {{ $displayGender }}
+            </td>
+            <td width="12%"><strong>Fecha:</strong></td>
+            <td style="border-bottom: 1px solid #1e3a8a; padding-left: 8px;">{{ $date }}</td>
+        </tr>
+        <tr>
+            <td><strong>Muestra de:</strong></td>
+            <td colspan="5" style="border-bottom: 1px solid #1e3a8a; padding-left: 8px;">
+            <td colspan="5" style="border-bottom: 1px solid #1e3a8a; padding-left: 8px;">
+                <strong>
+                    @if(!empty($order->sample_type))
+                    {{ strtoupper($order->sample_type) }}
+                    @else
+                    <span style="color: #999; font-style: italic;">No especificado</span>
+                    @endif
+                </strong>
+            </td>
+            </td>
+        </tr>
+    </table>
+
+    <!-- CONTENIDO DEL EXAMEN -->
     <div class="exam-section">
-        <div class="exam-title">Examen realizado: {{ strtoupper($order->exam->name) }}</div>
+        <div class="exam-title">Examen Realizado: {{ strtoupper($order->exam->name) }}</div>
 
         <div class="result-label">Resultado</div>
         @foreach($reportData as $item)
+        @if($item['value'] && $item['value'] !== '-' && $item['value'] !== '')
         <div class="result-value">
             {{ $item['value'] }} {{ $item['unit'] }}
         </div>
+        @endif
         @endforeach
+
+        <!-- Mostrar referencias solo si existen -->
+        @php
+        $hasReferences = false;
+        foreach($reportData as $item) {
+        if(!empty($item['ref_min']) || !empty($item['ref_max'])) {
+        $hasReferences = true;
+        break;
+        }
+        }
+        @endphp
+
+        @if($hasReferences)
+        <div class="references-box">
+            <strong>VALORES DE REFERENCIA:</strong><br>
+            @foreach($reportData as $item)
+            @if(!empty($item['ref_min']) || !empty($item['ref_max']))
+            {{ strtoupper($item['name']) }}: {{ $item['ref_min'] ?? '-' }} – {{ $item['ref_max'] ?? '-' }} {{ $item['unit'] }}<br>
+            @endif
+            @endforeach
+        </div>
+        @endif
     </div>
 
     <!-- FIRMA -->
     <div class="footer">
-        <br><br><br>
+        <br><br>
         <div class="sign-line"></div>
-        <div style="font-weight: bold;">Licenciado Luis Alejandro Alfaro</div>
+        <div style="font-weight: bold;">Lic. Luis Alejandro Alfaro</div>
+        <div style="font-size: 9px;">J.V.P.L.C.1137</div>
     </div>
 </body>
 

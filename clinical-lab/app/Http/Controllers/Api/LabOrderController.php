@@ -69,6 +69,7 @@ class LabOrderController extends Controller
         $request->validate([
             'patient_id' => 'required|exists:patients,id',
             'exam_id' => 'required|exists:exams,id',
+            'sample_type' => 'required|string|max:50',
         ]);
 
         // 1️⃣ Buscar el examen para obtener su precio actual
@@ -78,6 +79,7 @@ class LabOrderController extends Controller
         $order = LabOrder::create([
             'patient_id' => $request->patient_id,
             'exam_id' => $request->exam_id,
+            'sample_type' => $request->sample_type,
             'created_by' => Auth::id(),
             'status' => 'in_progress',
             'unit_price' => $exam->price, // <--- ¡ESTA LÍNEA ES LA CLAVE!

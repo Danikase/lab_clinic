@@ -107,11 +107,14 @@ export default function PatientForm({ user, setUser }) {
         <div className="mb-6">
           <button 
             onClick={() => navigate('/patients')} 
-            className="text-gray-600 hover:text-gray-900 flex items-center font-medium mb-2"
+            className="text-blue-600 hover:text-blue-700 flex items-center font-medium mb-2 transition-colors"
           >
-            ← Volver a Pacientes
+            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            Volver a Pacientes
           </button>
-          <h2 className="text-2xl font-bold text-gray-900">
+          <h2 className="text-2xl font-bold text-blue-900">
             {isEdit ? 'Editar Paciente' : 'Nuevo Paciente'}
           </h2>
           <p className="text-sm text-gray-500 mt-1">
@@ -121,8 +124,11 @@ export default function PatientForm({ user, setUser }) {
 
         <form onSubmit={handleSubmit} className="max-w-4xl space-y-6">
           {/* Información Personal */}
-          <div className="bg-white p-6 rounded-xl shadow-sm border">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">Información Básica</h3>
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-blue-200 hover:shadow-md transition-shadow">
+            <h3 className="text-lg font-bold text-blue-900 mb-4 flex items-center">
+              <span className="w-2 h-2 bg-blue-600 rounded-full mr-2"></span>
+              Información Básica
+            </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Nombre *</label>
@@ -132,7 +138,9 @@ export default function PatientForm({ user, setUser }) {
                   value={formData.first_name} 
                   onChange={handleChange} 
                   required 
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 outline-none ${errors.first_name ? 'border-red-500 bg-red-50' : 'border-gray-300'}`} 
+                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors ${
+                    errors.first_name ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                  }`} 
                 />
                 {errors.first_name && <p className="mt-1 text-xs text-red-500">{errors.first_name[0]}</p>}
               </div>
@@ -144,7 +152,9 @@ export default function PatientForm({ user, setUser }) {
                   value={formData.last_name} 
                   onChange={handleChange} 
                   required 
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 outline-none ${errors.last_name ? 'border-red-500 bg-red-50' : 'border-gray-300'}`} 
+                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors ${
+                    errors.last_name ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                  }`} 
                 />
                 {errors.last_name && <p className="mt-1 text-xs text-red-500">{errors.last_name[0]}</p>}
               </div>
@@ -156,7 +166,9 @@ export default function PatientForm({ user, setUser }) {
                   value={formData.dui} 
                   onChange={handleChange} 
                   required 
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 outline-none ${errors.dui ? 'border-red-500 bg-red-50' : 'border-gray-300'}`} 
+                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors ${
+                    errors.dui ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                  }`} 
                   placeholder="00000000-0" 
                 />
                 {errors.dui && <p className="mt-1 text-xs text-red-500">{errors.dui[0]}</p>}
@@ -168,7 +180,7 @@ export default function PatientForm({ user, setUser }) {
                   name="birth_date" 
                   value={formData.birth_date} 
                   onChange={handleChange} 
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none" 
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors" 
                 />
               </div>
               <div>
@@ -177,8 +189,10 @@ export default function PatientForm({ user, setUser }) {
                   name="gender" 
                   value={formData.gender} 
                   onChange={handleChange} 
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
+                  required
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
                 >
+                  <option value="">Seleccione...</option>
                   <option value="M">Masculino</option>
                   <option value="F">Femenino</option>
                 </select>
@@ -187,8 +201,11 @@ export default function PatientForm({ user, setUser }) {
           </div>
 
           {/* Información de Contacto */}
-          <div className="bg-white p-6 rounded-xl shadow-sm border">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">Información de Contacto</h3>
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-blue-200 hover:shadow-md transition-shadow">
+            <h3 className="text-lg font-bold text-blue-900 mb-4 flex items-center">
+              <span className="w-2 h-2 bg-yellow-500 rounded-full mr-2"></span>
+              Información de Contacto
+            </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
@@ -197,7 +214,7 @@ export default function PatientForm({ user, setUser }) {
                   name="phone" 
                   value={formData.phone} 
                   onChange={handleChange} 
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none" 
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors" 
                   placeholder="1234-5678" 
                 />
               </div>
@@ -208,7 +225,9 @@ export default function PatientForm({ user, setUser }) {
                   name="email" 
                   value={formData.email} 
                   onChange={handleChange} 
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 outline-none ${errors.email ? 'border-red-500 bg-red-50' : 'border-gray-300'}`} 
+                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors ${
+                    errors.email ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                  }`} 
                   placeholder="correo@ejemplo.com" 
                 />
                 {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email[0]}</p>}
@@ -220,7 +239,7 @@ export default function PatientForm({ user, setUser }) {
                   value={formData.address} 
                   onChange={handleChange} 
                   rows="3" 
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none" 
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors" 
                   placeholder="Dirección completa..." 
                 />
               </div>
@@ -232,14 +251,14 @@ export default function PatientForm({ user, setUser }) {
             <button 
               type="button" 
               onClick={() => navigate('/patients')} 
-              className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50"
+              className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-colors"
             >
               Cancelar
             </button>
             <button 
               type="submit" 
               disabled={loading} 
-              className="px-6 py-2 bg-primary-600 text-black rounded-lg font-medium hover:bg-primary-700 disabled:opacity-50 flex items-center gap-2"
+              className="px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-all shadow-sm hover:shadow-blue-500/20"
             >
               {loading && (
                 <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">

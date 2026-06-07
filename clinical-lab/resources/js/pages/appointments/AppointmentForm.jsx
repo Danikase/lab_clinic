@@ -72,28 +72,36 @@ export default function AppointmentForm({ user, setUser }) {
         <div className="mb-6">
           <button 
             onClick={() => navigate('/appointments')} 
-            className="text-gray-600 hover:text-gray-900 flex items-center font-medium mb-2"
+            className="text-blue-600 hover:text-blue-700 flex items-center font-medium mb-2 transition-colors"
           >
-            ← Volver a Citas
+            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            Volver a Citas
           </button>
-          <h2 className="text-2xl font-bold text-gray-900">Nueva Cita</h2>
+          <h2 className="text-2xl font-bold text-blue-900">Nueva Cita</h2>
           <p className="text-sm text-gray-500 mt-1">Agenda una nueva cita en el laboratorio</p>
         </div>
 
         <form onSubmit={handleSubmit} className="max-w-3xl">
-          <div className="bg-white p-6 rounded-xl shadow-sm border">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">Información de la Cita</h3>
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-blue-200 hover:shadow-md transition-shadow">
+            <h3 className="text-lg font-bold text-blue-900 mb-4 flex items-center">
+              <span className="w-2 h-2 bg-blue-600 rounded-full mr-2"></span>
+              Información de la Cita
+            </h3>
             
             <div className="space-y-5">
-              {/* ✅ PACIENTE - Con name */}
+              {/* ✅ PACIENTE */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Paciente *</label>
                 <select
-                  name="patient_id"  // ✅ IMPORTANTE
+                  name="patient_id"
                   required
                   value={formData.patient_id}
                   onChange={handleChange}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 outline-none ${errors.patient_id ? 'border-red-500 bg-red-50' : 'border-gray-300'}`}
+                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors ${
+                    errors.patient_id ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                  }`}
                 >
                   <option value="">Seleccionar paciente...</option>
                   {patients.map((p) => (
@@ -105,14 +113,14 @@ export default function AppointmentForm({ user, setUser }) {
                 {errors.patient_id && <p className="mt-1 text-xs text-red-500">{errors.patient_id[0]}</p>}
               </div>
 
-              {/* ✅ TIPO - Con name */}
+              {/* ✅ TIPO */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Tipo de Cita *</label>
                 <select
-                  name="type"  // ✅ IMPORTANTE
+                  name="type"
                   value={formData.type}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
                 >
                   <option value="toma_muestra">🧪 Toma de muestra</option>
                   <option value="entrega_resultados">📄 Entrega de resultados</option>
@@ -120,47 +128,49 @@ export default function AppointmentForm({ user, setUser }) {
                 </select>
               </div>
 
-              {/* ✅ FECHA - Con name */}
+              {/* ✅ FECHA Y HORA */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Fecha y Hora *</label>
                 <input
                   type="datetime-local"
-                  name="appointment_date"  // ✅ IMPORTANTE
+                  name="appointment_date"
                   required
                   value={formData.appointment_date}
                   onChange={handleChange}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 outline-none ${errors.appointment_date ? 'border-red-500 bg-red-50' : 'border-gray-300'}`}
+                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors ${
+                    errors.appointment_date ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                  }`}
                 />
                 {errors.appointment_date && <p className="mt-1 text-xs text-red-500">{errors.appointment_date[0]}</p>}
               </div>
 
-              {/* ✅ NOTAS - Con name */}
+              {/* ✅ NOTAS */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Notas</label>
                 <textarea
-                  name="notes"  // ✅ IMPORTANTE
+                  name="notes"
                   value={formData.notes}
                   onChange={handleChange}
                   rows="4"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
                   placeholder="Observaciones adicionales..."
                 />
               </div>
             </div>
 
             {/* Botones */}
-            <div className="flex justify-end space-x-3 mt-6 pt-6 border-t">
+            <div className="flex justify-end space-x-3 mt-6 pt-6 border-t border-blue-100">
               <button
                 type="button"
                 onClick={() => navigate('/appointments')}
-                className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50"
+                className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-colors"
               >
                 Cancelar
               </button>
               <button
                 type="submit"
                 disabled={loading}
-                className="px-6 py-2 bg-primary-600 text-black rounded-lg font-medium hover:bg-primary-700 disabled:opacity-50 flex items-center gap-2"
+                className="px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-all shadow-sm hover:shadow-blue-500/20"
               >
                 {loading && (
                   <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">

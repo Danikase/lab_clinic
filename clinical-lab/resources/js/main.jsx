@@ -17,8 +17,11 @@ function App() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-100 text-gray-600 font-medium">
-        ⏳ Cargando sistema...
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-blue-900 font-medium">Cargando sistema...</p>
+        </div>
       </div>
     );
   }

@@ -2,32 +2,78 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../../lib/axios';
 import Sidebar from '../../components/layout/Sidebar';
-import { confirmAlert, successAlert, errorAlert, showLoading, hideLoading } from '../../utils/alerts';
+import { successAlert, errorAlert, confirmAlert } from '../../utils/alerts';
+import LoadingSpinner from '../../components/layout/LoadingSpinner'; 
 
 export default function PatientList({ user, setUser }) {
   const [patients, setPatients] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
-  const [pagination, setPagination] = useState({});
+  const [pagination, setPagination] = useState({
+    current_page: 1,
+    last_page: 1,
+    per_page: 10,
+    total: 0,
+  });
 
   useEffect(() => {
     fetchPatients();
-  }, [search]);
+  }, [pagination.current_page, search]);
 
-  const fetchPatients = async (page = 1) => {
+  const fetchPatients = async () => {
+    setLoading(true);
     try {
-      setLoading(true);
-      const { data } = await api.get('/patients', { params: { search, page } });
+      const params = {
+        page: pagination.current_page,
+        search: search,
+      };
+      Object.keys(params).forEach(key => {
+        if (!params[key]) delete params[key];
+      });
+      
+      const { data } = await api.get('/patients', { params });
       setPatients(data.data);
       setPagination({
         current_page: data.current_page,
         last_page: data.last_page,
+        per_page: data.per_page,
         total: data.total,
       });
     } catch (error) {
-      console.error('Error fetching patients:', error);
+      console.error('Error al cargar pacientes:', error);
+      errorAlert('❌ Error', 'No se pudieron cargar los pacientes');
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Generar números de página
+  const getPageNumbers = () => {
+    const pages = [];
+    const totalPages = pagination.last_page;
+    const currentPage = pagination.current_page;
+    
+    if (totalPages <= 7) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      if (currentPage <= 3) {
+        pages.push(1, 2, 3, 4, '...', totalPages);
+      } else if (currentPage >= totalPages - 2) {
+        pages.push(1, '...', totalPages - 3, totalPages - 2, totalPages - 1, totalPages);
+      } else {
+        pages.push(1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages);
+      }
+    }
+    
+    return pages;
+  };
+
+  const handlePageChange = (page) => {
+    if (page >= 1 && page <= pagination.last_page) {
+      setPagination(prev => ({ ...prev, current_page: page }));
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
@@ -40,35 +86,24 @@ export default function PatientList({ user, setUser }) {
     
     if (!result.isConfirmed) return;
     
-    showLoading('Eliminando...');
     try {
       await api.delete(`/patients/${patient.id}`);
-      hideLoading();
       await successAlert('✅ Eliminado', 'El paciente ha sido eliminado correctamente');
-      fetchPatients(pagination.current_page);
+      fetchPatients();
     } catch (error) {
-      hideLoading();
       errorAlert('❌ Error', 'No se pudo eliminar el paciente');
     }
   };
 
   const handleToggleStatus = async (patient) => {
     const action = patient.is_active ? 'desactivar' : 'activar';
-    const result = await confirmAlert(
-      `¿${action === 'activar' ? '✅ Activar' : '⚠️ Desactivar'} paciente?`,
-      `¿Deseas ${action} a ${patient.first_name} ${patient.last_name}?`,
-      `Sí, ${action}`
-    );
-    
-    if (!result.isConfirmed) return;
-    
     try {
       await api.post(`/patients/${patient.id}/toggle-status`);
       await successAlert(
         patient.is_active ? '⚠️ Desactivado' : '✅ Activado',
         `El paciente ha sido ${action} correctamente`
       );
-      fetchPatients(pagination.current_page);
+      fetchPatients();
     } catch (error) {
       errorAlert('❌ Error', `No se pudo ${action} el paciente`);
     }
@@ -78,186 +113,226 @@ export default function PatientList({ user, setUser }) {
     <div className="flex min-h-screen bg-gray-50">
       <Sidebar user={user} setUser={setUser} />
 
-      <div className="flex-1 ml-64">
+      <div className="flex-1 ml-64 p-8">
         {/* Header */}
-        <header className="bg-white shadow-sm border-b border-gray-200 px-8 py-4 sticky top-0 z-40">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900">Gestión de Pacientes</h2>
-              <p className="text-sm text-gray-500">Administra la información de los pacientes</p>
-            </div>
-            <div className="flex items-center gap-4">
-              {/* ✅ BOTÓN QUE NAVEGA A LA PÁGINA COMPLETA (SIN MODAL) */}
-              <Link 
-                to="/patients/new"
-                className="flex items-center space-x-2 bg-primary-600 hover:bg-primary-700 text-black px-4 py-2.5 rounded-lg shadow-md transition-all font-medium"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                </svg>
-                <span>Nuevo Paciente</span>
-              </Link>
-            </div>
+        <header className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h2 className="text-2xl font-bold text-blue-900">Gestión de Pacientes</h2>
+            <p className="text-sm text-gray-500 mt-1">Administra la información de los pacientes</p>
           </div>
+          <Link
+            to="/patients/new"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg font-medium flex items-center gap-2 shadow-md transition-colors w-fit"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            Nuevo Paciente
+          </Link>
         </header>
 
-        <main className="p-8">
-          {/* Barra de búsqueda */}
-          <div className="mb-6 flex gap-4">
-            <div className="relative flex-1 max-w-md">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              </div>
+        {/* Filtros */}
+        <div className="bg-white p-4 rounded-xl shadow-sm border border-blue-200 mb-6">
+          <div className="flex gap-4">
+            <div className="flex-1 max-w-md">
+              <label className="block text-xs font-medium text-gray-600 mb-1">🔍 Buscar</label>
               <input
                 type="text"
-                placeholder="Buscar por nombre, DUI o teléfono..."
+                placeholder="Nombre, DUI o teléfono..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 sm:text-sm shadow-sm"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
               />
             </div>
           </div>
+        </div>
 
-          {/* Tabla */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <div className="px-6 py-4 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
-              <h3 className="text-lg font-bold text-gray-800">Lista de Pacientes</h3>
-              <span className="text-sm text-gray-500 bg-white px-3 py-1 rounded-full border shadow-sm">
-                Total: {pagination.total}
-              </span>
-            </div>
-            
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="bg-primary-600/10 text-gray-700 text-sm uppercase tracking-wider">
-                    <th className="px-6 py-3 font-bold">DUI</th>
-                    <th className="px-6 py-3 font-bold">Nombre Completo</th>
-                    <th className="px-6 py-3 font-bold">Teléfono</th>
-                    <th className="px-6 py-3 font-bold">Estado</th>
-                    <th className="px-6 py-3 font-bold text-right">Acciones</th>
+        {/* Tabla de Pacientes */}
+        <div className="bg-white rounded-xl shadow-sm border border-blue-200 overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left">
+              <thead className="bg-blue-50 text-blue-900 text-sm uppercase tracking-wider border-b border-blue-100">
+                <tr>
+                  <th className="px-6 py-3 font-bold">DUI</th>
+                  <th className="px-6 py-3 font-bold">Nombre Completo</th>
+                  <th className="px-6 py-3 font-bold">Teléfono</th>
+                  <th className="px-6 py-3 font-bold">Estado</th>
+                  <th className="px-6 py-3 font-bold text-right">Acciones</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-blue-100">
+                {loading ? (
+                  <tr>
+                    <td colSpan="5" className="px-6 py-12">
+                      <LoadingSpinner message="Cargando pacientes..." />
+                    </td>
                   </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200">
-                  {loading ? (
-                    <tr><td colSpan="5" className="text-center py-10 text-gray-500">Cargando pacientes...</td></tr>
-                  ) : patients.length === 0 ? (
-                    <tr><td colSpan="5" className="text-center py-10 text-gray-500">No se encontraron resultados</td></tr>
-                  ) : (
-                    patients.map((patient) => (
-                      <tr key={patient.id} className="hover:bg-gray-50 transition-colors group">
-                        <td className="px-6 py-4 text-sm font-mono text-gray-600">{patient.dui}</td>
-                        <td className="px-6 py-4">
-                          <div className="flex items-center">
-                            <div className="shrink-0 h-9 w-9 rounded-full bg-primary-100 flex items-center justify-center text-primary-600 font-bold text-sm">
-                              {patient.first_name?.[0]}{patient.last_name?.[0]}
-                            </div>
-                            <div className="ml-3">
-                              <div className="text-sm font-medium text-gray-900">
-                                {patient.first_name} {patient.last_name}
-                              </div>
-                              <div className="text-xs text-gray-500">ID: {patient.id}</div>
-                            </div>
+                ) : patients.length === 0 ? (
+                  <tr>
+                    <td colSpan="5" className="px-6 py-12 text-center text-gray-500">
+                      No hay pacientes registrados
+                    </td>
+                  </tr>
+                ) : (
+                  patients.map((patient) => (
+                    <tr key={patient.id} className="hover:bg-blue-50/50 transition-colors group">
+                      <td className="px-6 py-4 text-sm font-mono text-gray-600">{patient.dui}</td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center">
+                          <div className="shrink-0 h-9 w-9 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-sm">
+                            {patient.first_name?.[0]}{patient.last_name?.[0]}
                           </div>
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="flex items-center text-sm text-gray-700">
-                            <svg className="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                          <div className="ml-3">
+                            <div className="text-sm font-medium text-blue-900">
+                              {patient.first_name} {patient.last_name}
+                            </div>
+                            <div className="text-xs text-gray-500">ID: {patient.id}</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-700">
+                        {patient.phone || <span className="text-gray-400">-</span>}
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold border ${
+                          patient.is_active 
+                            ? 'bg-green-100 text-green-800 border-green-200' 
+                            : 'bg-red-100 text-red-800 border-red-200'
+                        }`}>
+                          {patient.is_active ? 'Activo' : 'Inactivo'}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <div className="flex items-center justify-end gap-2">
+                          {/* Expediente - AZUL */}
+                          <Link
+                            to={`/patients/${patient.id}/record`}
+                            className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
+                            title="Ver Expediente"
+                          >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                             </svg>
-                            {patient.phone || <span className="text-gray-400">-</span>}
-                          </div>
-                        </td>
-                        <td className="px-6 py-4">
-                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                            patient.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                          }`}>
-                            {patient.is_active ? 'Activo' : 'Inactivo'}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 text-right">
-                          <div className="flex items-center justify-end space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                            
-                            {/* 📄 Expediente Clínico */}
-                            <Link 
-                              to={`/patients/${patient.id}/record`}
-                              className="p-1.5 text-purple-600 hover:bg-purple-50 rounded-md transition-colors"
-                              title="Ver Expediente Clínico"
-                            >
-                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                              </svg>
-                            </Link>
+                          </Link>
 
-                            {/* Toggle Estado */}
-                            <button 
-                              onClick={() => handleToggleStatus(patient)}
-                              className={`p-1.5 rounded-md transition-colors ${patient.is_active ? 'text-amber-500 hover:bg-amber-50' : 'text-green-500 hover:bg-green-50'}`}
-                              title={patient.is_active ? 'Desactivar' : 'Activar'}
-                            >
+                          {/* Activar/Desactivar - AMARILLO/VERDE */}
+                          <button
+                            onClick={() => handleToggleStatus(patient)}
+                            className={`p-1.5 rounded-md transition-colors ${
+                              patient.is_active 
+                                ? 'text-yellow-600 hover:bg-yellow-50' 
+                                : 'text-green-600 hover:bg-green-50'
+                            }`}
+                            title={patient.is_active ? 'Desactivar' : 'Activar'}
+                          >
+                            {patient.is_active ? (
                               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={patient.is_active ? "M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" : "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"} />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
                               </svg>
-                            </button>
-                            
-                            {/* Editar */}
-                            <Link 
-                              to={`/patients/${patient.id}/edit`}
-                              className="p-1.5 text-blue-500 hover:bg-blue-50 rounded-md transition-colors"
-                              title="Editar"
-                            >
+                            ) : (
                               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                               </svg>
-                            </Link>
-                            
-                            {/* Eliminar */}
-                            <button 
-                              onClick={() => handleDelete(patient)}
-                              className="p-1.5 text-red-500 hover:bg-red-50 rounded-md transition-colors"
-                              title="Eliminar"
-                            >
-                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                              </svg>
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
-
-            {/* Paginación */}
-            {pagination.last_page > 1 && (
-              <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between bg-gray-50">
-                <div className="text-sm text-gray-600">
-                  Mostrando página <span className="font-medium">{pagination.current_page}</span> de {pagination.last_page}
-                </div>
-                <div className="flex space-x-2">
-                  <button
-                    disabled={pagination.current_page === 1}
-                    onClick={() => fetchPatients(pagination.current_page - 1)}
-                    className="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                  >
-                    Anterior
-                  </button>
-                  <button
-                    disabled={pagination.current_page === pagination.last_page}
-                    onClick={() => fetchPatients(pagination.current_page + 1)}
-                    className="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                  >
-                    Siguiente
-                  </button>
-                </div>
-              </div>
-            )}
+                            )}
+                          </button>
+                          
+                          {/* Editar - AZUL */}
+                          <Link
+                            to={`/patients/${patient.id}/edit`}
+                            className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
+                            title="Editar"
+                          >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                            </svg>
+                          </Link>
+                          
+                          {/* Eliminar - ROJO */}
+                          <button
+                            onClick={() => handleDelete(patient)}
+                            className="p-1.5 text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                            title="Eliminar"
+                          >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
           </div>
-        </main>
+
+          {/* PAGINACIÓN CON NÚMEROS */}
+          {!loading && patients.length > 0 && (
+            <div className="px-6 py-4 border-t border-blue-200 flex items-center justify-between bg-blue-50/30">
+              {/* Información */}
+              <div className="text-sm text-gray-600">
+                Mostrando <span className="font-medium text-blue-900">{pagination.total > 0 ? (pagination.current_page - 1) * pagination.per_page + 1 : 0}</span> - <span className="font-medium text-blue-900">{Math.min(pagination.current_page * pagination.per_page, pagination.total)}</span> de <span className="font-medium text-blue-900">{pagination.total}</span> pacientes
+              </div>
+
+              {/* Botones de paginación */}
+              <div className="flex items-center gap-1">
+                {/* Primera página */}
+                <button
+                  onClick={() => handlePageChange(1)}
+                  disabled={pagination.current_page === 1}
+                  className="px-3 py-1.5 text-sm font-medium rounded-lg border border-blue-200 bg-white text-blue-700 hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  ««
+                </button>
+
+                {/* Página anterior */}
+                <button
+                  onClick={() => handlePageChange(pagination.current_page - 1)}
+                  disabled={pagination.current_page === 1}
+                  className="px-3 py-1.5 text-sm font-medium rounded-lg border border-blue-200 bg-white text-blue-700 hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  «
+                </button>
+
+                {/* Números de página */}
+                {getPageNumbers().map((page, index) => (
+                  <button
+                    key={index}
+                    onClick={() => typeof page === 'number' && handlePageChange(page)}
+                    disabled={page === '...'}
+                    className={`px-3 py-1.5 text-sm font-medium rounded-lg border transition-colors ${
+                      page === pagination.current_page
+                        ? 'bg-blue-600 border-blue-600 text-white'
+                        : page === '...'
+                        ? 'border-blue-200 bg-blue-50 text-gray-500 cursor-default'
+                        : 'border-blue-200 bg-white text-blue-700 hover:bg-blue-50'
+                    }`}
+                  >
+                    {page}
+                  </button>
+                ))}
+
+                {/* Página siguiente */}
+                <button
+                  onClick={() => handlePageChange(pagination.current_page + 1)}
+                  disabled={pagination.current_page === pagination.last_page}
+                  className="px-3 py-1.5 text-sm font-medium rounded-lg border border-blue-200 bg-white text-blue-700 hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  »
+                </button>
+
+                {/* Última página */}
+                <button
+                  onClick={() => handlePageChange(pagination.last_page)}
+                  disabled={pagination.current_page === pagination.last_page}
+                  className="px-3 py-1.5 text-sm font-medium rounded-lg border border-blue-200 bg-white text-blue-700 hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  »»
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
